@@ -12,13 +12,13 @@ public class EmptyDataException extends Exception{
 	
 	public void determineEmptyFields(String id,String idType, String name, String lastNames) {
 		if(id.equals(""))
-			emptyFields+="Empty id ";
+			emptyFields+="Empty id, ";
 		if(idType.equals(""))
-			emptyFields+="Empty idType ";
+			emptyFields+="Empty idType, ";
 		if(name.equals(""))
-			emptyFields+="Empty name ";
+			emptyFields+="Empty name, ";
 		if(lastNames.equals(""))
-			emptyFields+="Empty lastNames";
+			emptyFields+="Empty lastNames.";
 	}
 	
 	@Override

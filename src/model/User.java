@@ -15,6 +15,7 @@ public class User {
 	public static final String TI = "Tarjeta de Identidad";
 	public static final String REGISTRO_CIVIL = "Registro Civil";
 	public static final String PASAPORTE = "Pasaporte";
+	public static final String CE = "Cédula de Extranjería";
 	
 	//---------------------------------------------------------------------
 	//Atributos

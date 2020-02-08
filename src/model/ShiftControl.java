@@ -13,6 +13,20 @@ public class ShiftControl {
 	private Shift availableShift;
 	
 	//------------------------------------------------------------------------------------------------------------------------
+	//Getters
+	//------------------------------------------------------------------------------------------------------------------------
+	
+	public Shift getCurrentShift() {
+		return currentShift;
+	}
+
+	public Shift getAvailableShift() {
+		return availableShift;
+	}
+
+	
+	
+	//------------------------------------------------------------------------------------------------------------------------
 	//Constructor
 	//------------------------------------------------------------------------------------------------------------------------
 	public ShiftControl() {
@@ -25,7 +39,6 @@ public class ShiftControl {
 	//------------------------------------------------------------------------------------------------------------------------
 	//Metodos Analizadores
 	//------------------------------------------------------------------------------------------------------------------------
-	
 	
 	public String searchUserAndAssignShift(String id) {
 		
@@ -44,7 +57,7 @@ public class ShiftControl {
 		return message;
 	}
 	
-	public String registerNewUser(String id, String idType, String name, String lastNames, String address, String phoneNumber) throws EmptyDataException, DoubleRegistrationException {
+	public void registerNewUser(String id, String idType, String name, String lastNames, String address, String phoneNumber) throws EmptyDataException, DoubleRegistrationException {
 		
 		if((id.equals("") || idType.equals("")) || (name.equals("") || lastNames.equals("")) ){
 			throw new EmptyDataException(id, idType, name, lastNames);
@@ -55,7 +68,6 @@ public class ShiftControl {
 		else {
 			users.add(new User(id, idType, name, lastNames, address, phoneNumber));
 		}
-		return "User added correctly";
 	}
 	
 	public boolean existUserWithId(String id) {

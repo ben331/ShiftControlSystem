@@ -11,7 +11,7 @@ public class DoubleRegistrationException extends Exception{
 	
 	@Override
 	public String getMessage() {
-		return "User with the id: "+repeatedId+" is already exists";
+		return "User with the id: "+repeatedId+" is already exists in our system.";
 	}
 
 }
