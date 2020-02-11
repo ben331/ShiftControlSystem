@@ -21,17 +21,49 @@ public class User {
 	//Atributos
 	//---------------------------------------------------------------------
 	
+	/**
+	 * Code of identification of the user.
+	 */
 	private String id;
+	
+	/**
+	 * Type of user identification document.
+	 */
 	private String idType;
+	
+	/**
+	 * User name.
+	 */
 	private String name;
+	
+	/**
+	 * User last names.
+	 */
 	private String lastNames;
+	
+	/**
+	 * User address.
+	 */
 	private String address;
+	
+	/**
+	 * User phone number.
+	 */
 	private String phoneNumber;
 	
 	//---------------------------------------------------------------------
 	//Constructores
 	//---------------------------------------------------------------------
 	
+	/**
+	 * <b>Des:</b> Default Constructor of an user object.<br>
+	 * @param id Code of identification of the user. id!=null id!=""
+	 * @param idType Type of user identification document. id!=null id!=""
+	 * @param name User name. id!=null id!=""
+	 * @param lastNames User last names. id!=null id!=""
+	 * @param address User Address.
+	 * @param phoneNumber User phone number.
+	 */
 	public User(String id, String idType, String name, String lastNames, String address, String phoneNumber) {
 		this.id = id;
 		this.idType = idType;
@@ -60,6 +92,9 @@ public class User {
 	
 	
 	@Override
+	/**
+	 * String representation of an user object.
+	 */
 	public String toString() {
 		String user;
 		user =idType+" "+id+".  "+name+" "+lastNames+".   Address: "+address+".   Phone Number: "+phoneNumber;

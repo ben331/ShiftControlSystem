@@ -31,7 +31,7 @@ public class Main {
 			
 			//Menu
 			
-			System.out.println("\nSelect an Option: \n1.Add User \n2.Register Shift \n3.Attend Shift \n4.Exit");
+			System.out.println("\nSelect an Option: \n1.Add User \n2.Register Shift \n3.Attend Shift \n4.Show Shifts Report \n5.Exit");
 			option=reader.nextInt();
 			reader.nextLine();
 			
@@ -118,33 +118,51 @@ public class Main {
 				System.out.println("Type the id user: ");
 				id= reader.nextLine();
 				
-				System.out.println(shiftControl.searchUserAndAssignShift(id));
+				try {
+					
+					System.out.println(shiftControl.searchUser(id).toString());
+					
+					System.out.println("\n1.assign shift. \n2.Cancel");
+					option2=reader.nextInt();
+					reader.nextLine();
+					
+					if(option2==1) 
+						System.out.println(shiftControl.assignShiftToUser(id));
+
+				}catch(NullPointerException e) {
+					System.out.println("User Not Found with id: "+id);
+				}
 				
 			break;
 			
 			case 3:
-				
-				System.out.println("Current Shift: "+ shiftControl.getCurrentShift().getStringShift());
-				System.out.println("\n1.Attend Shift \nPress else Button to cancel");
-				option2=reader.nextInt();
-				reader.nextLine();
-				if(option2==1){
+				option2=1;
+				while(option2==1) {
 					
-					System.out.println("\nwas the user attended? \n1.Yes \n2.No");
-					option2=reader.nextInt();
-					reader.nextLine();
-					
-					if(option2==1)
-						attended=true;
-					else
-						attended=false;
-					
-					try {
-						shiftControl.attendShift(attended);
-						System.out.println("Shift Registered");
-					}catch(UnreservedShiftException e) {
-						System.out.println(e.getMessage()+" Please, wait until some user reserve the shift.");
+					System.out.println("Current Shift: "+ shiftControl.getCurrentShift().getStringShift());
+
+					if(option2==1){
+						
+						System.out.println("\nwas the user attended? \n1.Yes \n2.No");
+						option2=reader.nextInt();
+						reader.nextLine();
+						
+						if(option2==1)
+							attended=true;
+						else
+							attended=false;
+						
+						try {
+							shiftControl.attendShift(attended);
+							System.out.println("Shift Registered");
+						}catch(UnreservedShiftException e) {
+							System.out.println(e.getMessage()+" Please, wait until some user reserve the shift.");
+						}
 					}
+					
+					System.out.println("Current Shift: "+ shiftControl.getCurrentShift().getStringShift());
+					System.out.println("\n1.Attend Shift \n2.Back");
+					option2=reader.nextInt();
 				}
 			break;
 			
@@ -152,13 +170,15 @@ public class Main {
 				System.out.println("Good Bye ;)");
 			break;
 			
+			
+			case 5:
+				System.out.println(shiftControl.generateReport());
+			break;
 			default:
 				System.out.println("Invalided Option");
 			break;
 			}
 			
-		}while(option!=4);
-
+		}while(option!=5);
 	}
-
 }
