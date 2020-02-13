@@ -36,6 +36,14 @@ public class ShiftControl {
 	//Getters
 	//------------------------------------------------------------------------------------------------------------------------
 	
+	public ArrayList<User> getUsers(){
+		return users;
+	}
+	
+	public ArrayList<Shift> getShifts(){
+		return shifts;
+	}
+	
 	public Shift getCurrentShift() {
 		return currentShift;
 	}
@@ -71,12 +79,12 @@ public class ShiftControl {
 	 * <b>Pre: </b> the user is in the users list.<br>
 	 * @param id Code of a user's identification document. id!=null.
 	 * @return A message that confirm the shift code assigned to the user.
-	 * @throws NullPointerException When the users is not in the list of users.
+	 * @throws NullPointerException When the users is not founded in the list of users.
 	 */
 	public String assignShiftToUser(String id) throws NullPointerException{
 		
 		User user = searchUser(id);
-		Shift shift = shiftOfUser(id);
+		Shift shift = activeShiftOfUser(id);
 		if(shift==null) {
 			shifts.add(new Shift(availableShift.getLiteral(),availableShift.getNumber(),user,false));
 			availableShift.nextShift();
@@ -107,7 +115,7 @@ public class ShiftControl {
 	 * @param id Code of a user's identification document. id!=null
 	 * @return shift Is a shift corresponding to the user with the given id. (shift can be null).
 	 */
-	public Shift shiftOfUser(String id) {
+	public Shift activeShiftOfUser(String id) {
 		Shift shift =null;
 		for(int i=0; i<shifts.size();i++) {
 			
