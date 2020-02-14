@@ -86,7 +86,8 @@ public class ShiftControl {
 		User user = searchUser(id);
 		Shift shift = activeShiftOfUser(id);
 		if(shift==null) {
-			shifts.add(new Shift(availableShift.getLiteral(),availableShift.getNumber(),user,false));
+			shift = new Shift(availableShift.getLiteral(),availableShift.getNumber(),user,true);
+			shifts.add(shift);
 			availableShift.nextShift();
 		}
 		return "Shift "+shift.getStringShift()+" asigned to user "+user.getName();

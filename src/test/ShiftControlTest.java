@@ -7,12 +7,15 @@ import org.junit.jupiter.api.Test;
 
 import customException.DoubleRegistrationException;
 import customException.EmptyDataException;
+import customException.UnreservedShiftException;
 
 class ShiftControlTest {
 	
-	private ShiftControl control = new ShiftControl();
+	private ShiftControl control;
 	
 	void setup1(){
+		
+		control = new ShiftControl();
 		
 		//Users
 		
@@ -25,12 +28,12 @@ class ShiftControlTest {
 		
 		//Shifts
 		
-		control.getShifts().add(new Shift('A',0,reyes,true)); //
+		control.getShifts().add(new Shift('A',0,reyes,false)); //
 		control.getAvailableShift().nextShift();              // Pretense assign and attend a shift. (Reyes has an inactive shift).
 		control.getCurrentShift().nextShift();                //
 		
 		
-		control.getShifts().add(new Shift('A',0,benjamin,false)); //
+		control.getShifts().add(new Shift('A',1,benjamin,true)); //
 		control.getAvailableShift().nextShift();                  //Pretense assign a shift. (Benjamin has an active shift).
 		
 		//Two shifts was assigned and one shift was attended , so availableShift=A02, and cuurentShift=A01.
@@ -130,7 +133,7 @@ class ShiftControlTest {
 		}
 	}
 	
-	
+	@Test
 	void testSearchUser() {
 		
 		//User searched exist. And There are users in the system.
@@ -154,7 +157,7 @@ class ShiftControlTest {
 		assertTrue(user==null);
 	}
 	
-	
+	@Test
 	void testShiftToUser() {
 		
 		//I.The User have an active shift
@@ -170,8 +173,8 @@ class ShiftControlTest {
 		//II. The user doesn't have an active shift.
 		setup1();
 		try {
-			control.assignShiftToUser("15872632");
-			assertEquals(control.activeShiftOfUser("1007378465"),control.getShifts().get(2));
+			assertEquals(control.assignShiftToUser("15872632"),"Shift A02 asigned to user Juan"); //Reyes had the inactive shift A00.
+			assertEquals(control.activeShiftOfUser("15872632").getStringShift(),control.getShifts().get(2).getStringShift());
 			assertEquals(control.getAvailableShift().getStringShift(),"A03");
 		} catch(NullPointerException e) {
 			fail("Wrong exception");
@@ -199,15 +202,15 @@ class ShiftControlTest {
 	
 	//The test of operation "generate new shift" is tested in lines #165, #175, #185. This method is called 'nextShift' and it's tested in the class 'ShiftTest' too.
 	
-	/*
+	@Test
 	void testAttendShift() {
 		
 		//I.There are shifts for attend.
 		setup1();
 		try {
 			control.attendShift(true); //Se atiende el turno de benjamin
-			assertEquals(control.activeShiftOfUser("15872632").isActive(),false);
-			assertEquals(control.activeShiftOfUser("15872632").wasAttended(),true);
+			assertEquals(control.getShifts().get(1).isActive(),false);
+			assertEquals(control.getShifts().get(1).wasAttended(),true);
 			assertEquals(control.getCurrentShift().getStringShift(),"A02");
 			
 		} catch(UnreservedShiftException e) {
@@ -223,6 +226,4 @@ class ShiftControlTest {
 			assertTrue(true);
 		}
 	}
-	
-	*/
 }

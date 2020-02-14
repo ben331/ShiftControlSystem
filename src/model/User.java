@@ -89,8 +89,18 @@ public class User {
 		return name;
 	}
 	
-	
-	
+	public String getLastNames() {
+		return lastNames;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
 	@Override
 	/**
 	 * String representation of an user object.

@@ -54,14 +54,13 @@ public class Shift {
 	 * @param literal Literal part of the code that identify the shift. Literal is between 'A' and 'Z'. 
 	 * @param number Number part of the code that identify the shift. Number is between 0 and 99.
 	 * @param assignedIdUser User that have reserved this shift. User must exist in the users list.
-	 * @param attended  A boolean value that indicate if the shift has been attended.
+	 * @param active  A boolean value that indicate if the shift is on hold.
 	 */
-	public Shift(char literal, int number, User assignedIdUser, boolean attended) {
+	public Shift(char literal, int number, User assignedIdUser, boolean active) {
 		this.literal = literal;
 		this.number = number;
 		this.assignedIdUser = assignedIdUser;
-		this.attended = attended;
-		this.active=true;
+		this.active=active;
 	}
 	
 	//---------------------------------------------------------
