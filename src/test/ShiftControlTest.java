@@ -62,7 +62,7 @@ class ShiftControlTest {
 		//II. The user already exist. (Benjamin)
 		try {
 			setup1();
-			control.registerNewUser("1007378465", User.CC, "Diego", "reyes", "", "3120303122");
+			control.registerNewUser("1007378465", User.CC, "Diego", "reyes", "", "");
 			fail("DoubleRegistrationException unhandled");
 		} catch (EmptyDataException e) {
 			fail("Wrong Exception");
@@ -73,7 +73,7 @@ class ShiftControlTest {
 		//III. There are not users in the system.
 		try {
 			setup2();
-			control.registerNewUser("1007378465", User.CC, "Benjamin", "Silva S", "Calle 31c #11-84", "314787608");
+			control.registerNewUser("1007378465", User.CC, "Benjamin", "Silva S", "", "");
 			assertEquals(control.getUsers().get(0).getId(),"1007378465","User added Incorrectly");
 		} catch (EmptyDataException e) {
 			fail("Wrong Exception");
@@ -158,7 +158,7 @@ class ShiftControlTest {
 	}
 	
 	@Test
-	void testShiftToUser() {
+	void testAssignShiftToUser() {
 		
 		//I.The User have an active shift
 		setup1();
@@ -220,7 +220,7 @@ class ShiftControlTest {
 		//II. There are nor shifts for attend.
 		setup2();
 		try {
-			control.attendShift(true); //Se atiende el turno de benjamin
+			control.attendShift(true); //Se intenta atender un turno que no ha sido asignado.
 			fail();
 		} catch(UnreservedShiftException e) {
 			assertTrue(true);

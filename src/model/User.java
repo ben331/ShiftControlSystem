@@ -11,7 +11,7 @@ public class User {
 	//Constantes de dominio para el atributo 'idType'
 	//---------------------------------------------------------------------
 	
-	public static final String CC = "Cédula de Ciudadania";
+	public static final String CC = "Cédula de Ciudadanía";
 	public static final String TI = "Tarjeta de Identidad";
 	public static final String REGISTRO_CIVIL = "Registro Civil";
 	public static final String PASAPORTE = "Pasaporte";

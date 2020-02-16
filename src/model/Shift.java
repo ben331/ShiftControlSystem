@@ -7,7 +7,15 @@ package model;
 public class Shift {
 	
 	//-----------------------------------------
-	//Atributos
+	//Associations
+	//-----------------------------------------
+	/**
+	 * User who have reserved this shift 
+	 */
+	private User assignedUser;
+	
+	//-----------------------------------------
+	//Attributes
 	//-----------------------------------------
 	/**
 	 * Literal part of the code that identify the shift
@@ -18,11 +26,6 @@ public class Shift {
 	 * Number part of the code that identify the shift
 	 */
 	private int number;
-	
-	/**
-	 * User who have reserved this shift 
-	 */
-	private User assignedIdUser;
 	
 	/**
 	 * A boolean value that indicate if the shift has been attended
@@ -36,7 +39,7 @@ public class Shift {
 	
 	
 	//-----------------------------------------
-	//Constructores
+	//Constructors
 	//-----------------------------------------
 	
 	/**
@@ -59,7 +62,7 @@ public class Shift {
 	public Shift(char literal, int number, User assignedIdUser, boolean active) {
 		this.literal = literal;
 		this.number = number;
-		this.assignedIdUser = assignedIdUser;
+		this.assignedUser = assignedIdUser;
 		this.active=active;
 	}
 	
@@ -77,8 +80,8 @@ public class Shift {
 	}
 
 
-	public User getAssignedIdUser() {
-		return assignedIdUser;
+	public User getAssignedUser() {
+		return assignedUser;
 	}
 
 	
@@ -107,7 +110,7 @@ public class Shift {
 	}
 	
 	//--------------------------------------------------------------
-	//Metodos Analizadores
+	//Analyzers Methods
 	//--------------------------------------------------------------
 	
 	/**

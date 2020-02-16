@@ -34,7 +34,7 @@ class ShiftTest {
 		assertEquals(shift.getNumber(),42);
 		assertEquals(shift.getStringShift(),"F42");
 		assertEquals(shift.isActive(),false);
-		assertEquals(shift.getAssignedIdUser(),pepito);
+		assertEquals(shift.getAssignedUser(),pepito);
 		assertEquals(shift.wasAttended(),false);
 		
 		shift.setActive(true);

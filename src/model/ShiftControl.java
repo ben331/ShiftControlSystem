@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ShiftControl {
 	
 	//------------------------------------------------------------------------------------------------------------------------
-	//Relaciones
+	//Associations
 	//------------------------------------------------------------------------------------------------------------------------
 	
 	/**
@@ -69,8 +69,53 @@ public class ShiftControl {
 	}
 	
 	//------------------------------------------------------------------------------------------------------------------------
-	//Metodos Analizadores
+	//Analyzers Methods
 	//------------------------------------------------------------------------------------------------------------------------
+	
+	/**
+	 * <b>Des:</b> This method search a user in the users list with his id.<br>
+	 * @param id Code of a user's identification document. id!=null
+	 * @return User A user in the users list with the same id. If the user is not in the list, return null. 
+	 */
+	public User searchUser(String id) {
+		
+		User user=null;
+		for(int i=0; i<users.size();i++) {
+			
+			if(users.get(i).getId().equals(id)) {
+				
+				user=users.get(i);
+			}
+		}
+		return user;
+	}
+	
+	/**
+	 * <b>Des:</b> This method create and add a new user to the users list with a given parameters, only if the parameters are valid.<br>
+	 * <b>Pre:</b> The parameters id, idType, name and last names are not empty. The user is not already registered in the users list.<br>
+	 * <b>Post:</b> The user created are added to the users list. <br>
+	 * @param id Code of a user's identification document. id!=null id!=""
+	 * @param idType Type of user identification document. idType!=null idType!=""
+	 * @param name User's name. name!=null name!=""
+	 * @param lastNames last names's user. lastNames !=null lastNames!=""
+	 * @param address User's address.
+	 * @param phoneNumber User's phone number.
+	 * @throws EmptyDataException When a required parameter are empty.
+	 * @throws DoubleRegistrationException When exist an user with the same id code.
+	 */
+	public void registerNewUser(String id, String idType, String name, String lastNames, String address, String phoneNumber) throws EmptyDataException, DoubleRegistrationException {
+		
+		if((id.equals("") || idType.equals("")) || (name.equals("") || lastNames.equals("")) ){
+			throw new EmptyDataException(id, idType, name, lastNames);
+		}
+		else if(searchUser(id)==null) {
+			throw new DoubleRegistrationException(id);
+		}
+		else {
+			users.add(new User(id, idType, name, lastNames, address, phoneNumber));
+		}
+	}
+	
 	
 	/**
 	 * <b>Des:</b> This method assign an user, with a particular id, to a shift that is added in the shifts list.<br>
@@ -94,24 +139,6 @@ public class ShiftControl {
 	}
 	
 	/**
-	 * <b>Des:</b> This method search a user in the users list with his id.<br>
-	 * @param id Code of a user's identification document. id!=null
-	 * @return User A user in the users list with the same id. If the user is not in the list, return null. 
-	 */
-	public User searchUser(String id) {
-		
-		User user=null;
-		for(int i=0; i<users.size();i++) {
-			
-			if(users.get(i).getId().equals(id)) {
-				
-				user=users.get(i);
-			}
-		}
-		return user;
-	}
-	
-	/**
 	 * <b>Des:</b> This method search an active shift, in the list shifts, with the id of its assignedUser same to the given id.<br>
 	 * @param id Code of a user's identification document. id!=null
 	 * @return shift Is a shift corresponding to the user with the given id. (shift can be null).
@@ -120,58 +147,12 @@ public class ShiftControl {
 		Shift shift =null;
 		for(int i=0; i<shifts.size();i++) {
 			
-			if(shifts.get(i).getAssignedIdUser().getId().equals(id)  &&  shifts.get(i).isActive()){
+			if(shifts.get(i).getAssignedUser().getId().equals(id)  &&  shifts.get(i).isActive()){
 				shift=shifts.get(i);
 			}
 		}
 		
 		return shift;
-	}
-	
-	/**
-	 * <b>Des:</b> This method create and add a new user to the users list with a given parameters, only if the parameters are valid.<br>
-	 * <b>Pre:</b> The parameters id, idType, name and last names are not empty. The user is not already registered in the users list.<br>
-	 * <b>Post:</b> The user created are added to the users list. <br>
-	 * @param id Code of a user's identification document. id!=null id!=""
-	 * @param idType Type of user identification document. idType!=null idType!=""
-	 * @param name User's name. name!=null name!=""
-	 * @param lastNames last names's user. lastNames !=null lastNames!=""
-	 * @param address User's address.
-	 * @param phoneNumber User's phone number.
-	 * @throws EmptyDataException When a required parameter are empty.
-	 * @throws DoubleRegistrationException When exist an user with the same id code.
-	 */
-	public void registerNewUser(String id, String idType, String name, String lastNames, String address, String phoneNumber) throws EmptyDataException, DoubleRegistrationException {
-		
-		if((id.equals("") || idType.equals("")) || (name.equals("") || lastNames.equals("")) ){
-			throw new EmptyDataException(id, idType, name, lastNames);
-		}
-		else if(existUserWithId(id)) {
-			throw new DoubleRegistrationException(id);
-		}
-		else {
-			users.add(new User(id, idType, name, lastNames, address, phoneNumber));
-		}
-	}
-	
-	/**
-	 * <b>Des:</b>This method determine if exist an user with a particular id.<br>
-	 * @param id Code of a user's identification document. id!=null
-	 * @return A boolean value that indicate if exist a user in users list with the given id.
-	 */
-	public boolean existUserWithId(String id) {
-		
-		boolean existingUser=false;
-		
-		for(int i=0; i<users.size();i++) {
-			
-			if(users.get(i).getId().equals(id)) {
-				existingUser=true;
-				break;
-			}
-		}
-		
-		return existingUser;
 	}
 	
 	/**
@@ -208,7 +189,7 @@ public class ShiftControl {
 		
 		for(int i=0; i<shifts.size();i++) {
 			
-			report+="\n   "+shifts.get(i).getStringShift()+"   "+shifts.get(i).getAssignedIdUser().getId()+"      "+shifts.get(i).getAssignedIdUser().getName()+"             "+shifts.get(i).wasAttended();
+			report+="\n   "+shifts.get(i).getStringShift()+"   "+shifts.get(i).getAssignedUser().getId()+"      "+shifts.get(i).getAssignedUser().getName()+"             "+shifts.get(i).wasAttended();
 		}
 		return report;
 	}
