@@ -1,4 +1,4 @@
-package test;
+package model;
 
 import model.Shift;
 import model.User;
@@ -23,7 +23,7 @@ class ShiftTest {
 	
 	void setUp3() {
 		pepito = new User("1",User.TI, "pepito","perez","","");
-		shift = new Shift('F',42,pepito,false);
+		shift = new Shift('F',42,pepito,false,null);
 	}
 	
 	//Test Getters and Setter

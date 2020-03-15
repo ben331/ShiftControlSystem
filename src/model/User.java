@@ -1,15 +1,20 @@
 package model;
 
+import java.io.Serializable;
+
 /**
  * @author Benjamin Silva S
  *
  */
 
-public class User {
+@SuppressWarnings("serial")
+public class User implements Comparable<User>, Serializable {
 	
 	//---------------------------------------------------------------------
 	//Constantes de dominio para el atributo 'idType'
 	//---------------------------------------------------------------------
+	
+	public static final String[] ID = {"Cédula de Ciudadanía","Tarjeta de Identidad","Registro Civil","Pasaporte","Cédula de Extranjería"};
 	
 	public static final String CC = "Cédula de Ciudadanía";
 	public static final String TI = "Tarjeta de Identidad";
@@ -39,7 +44,7 @@ public class User {
 	/**
 	 * User last names.
 	 */
-	private String lastNames;
+	private String lastName;
 	
 	/**
 	 * User address.
@@ -64,11 +69,11 @@ public class User {
 	 * @param address User Address.
 	 * @param phoneNumber User phone number.
 	 */
-	public User(String id, String idType, String name, String lastNames, String address, String phoneNumber) {
+	public User(String id, String idType, String name, String lastName, String address, String phoneNumber) {
 		this.id = id;
 		this.idType = idType;
 		this.name = name;
-		this.lastNames = lastNames;
+		this.lastName = lastName;
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 	}
@@ -89,8 +94,8 @@ public class User {
 		return name;
 	}
 	
-	public String getLastNames() {
-		return lastNames;
+	public String getLastName() {
+		return lastName;
 	}
 
 	public String getAddress() {
@@ -107,7 +112,12 @@ public class User {
 	 */
 	public String toString() {
 		String user;
-		user =idType+" "+id+".  "+name+" "+lastNames+".   Address: "+address+".   Phone Number: "+phoneNumber;
+		user =idType+" "+id+".  "+name+" "+lastName+".   Address: "+address+".   Phone Number: "+phoneNumber;
 		return user;
+	}
+
+	@Override
+	public int compareTo(User u2) {
+		return id.compareTo(u2.id);
 	}
 }

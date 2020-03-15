@@ -1,6 +1,5 @@
-package test;
+package model;
 
-import model.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -11,35 +10,35 @@ import customException.UnreservedShiftException;
 
 class ShiftControlTest {
 	
-	private ShiftControl control;
+	private ShiftManager shiftManager;
 	
 	void setup1(){
 		
-		control = new ShiftControl();
+		shiftManager = new ShiftManager();
 		
 		//Users
 		
 		User benjamin = new User("1007378465", User.CC,"Benjamin","Silva S","","");
 		User reyes = new User("15872632",User.CC, "Juan","Reyes","","");
 		User anderson = new User("1008253222",User.PASAPORTE,"Anderson","Cardenas","","");
-		control.getUsers().add(benjamin);
-		control.getUsers().add(reyes);
-		control.getUsers().add(anderson);
+		shiftManager.getUsers().add(benjamin);
+		shiftManager.getUsers().add(reyes);
+		shiftManager.getUsers().add(anderson);
 		
 		//Shifts
 		
-		control.getShifts().add(new Shift('A',0,reyes,false)); //
-		control.getAvailableShift().nextShift();              // Pretense assign and attend a shift. (Reyes has an inactive shift).
-		control.getCurrentShift().nextShift();                //
+		shiftManager.getShifts().add(new Shift('A',0,reyes,false,null)); //
+		shiftManager.getAvailableShift().nextShift();              // Pretense assign and attend a shift. (Reyes has an inactive shift).
+		shiftManager.getCurrentShift().nextShift();                //
 		
 		
-		control.getShifts().add(new Shift('A',1,benjamin,true)); //
-		control.getAvailableShift().nextShift();                  //Pretense assign a shift. (Benjamin has an active shift).
+		shiftManager.getShifts().add(new Shift('A',1,benjamin,true,null)); //
+		shiftManager.getAvailableShift().nextShift();                  //Pretense assign a shift. (Benjamin has an active shift).
 		
 		//Two shifts was assigned and one shift was attended , so availableShift=A02, and cuurentShift=A01.
 	}
 	void setup2() {
-		control.getUsers().clear();
+		shiftManager.getUsers().clear();
 	}
 
 	@Test
@@ -49,9 +48,9 @@ class ShiftControlTest {
 		// I. The User doesn't exist. And There are Users in the system.
 		try {
 			setup1();
-			control.registerNewUser("1004581240", User.CC, "Manuel", "alvarez", "", "");
+			shiftManager.registerNewUser("1004581240", User.CC, "Manuel", "alvarez", "", "");
 			
-			assertEquals(control.getUsers().get(3).getId(),"1004581240","User added Incorrectly");
+			assertEquals(shiftManager.getUsers().get(3).getId(),"1004581240","User added Incorrectly");
 		} catch (EmptyDataException e) {
 			fail("Wrong Exception");
 		} catch (DoubleRegistrationException e) {
@@ -62,7 +61,7 @@ class ShiftControlTest {
 		//II. The user already exist. (Benjamin)
 		try {
 			setup1();
-			control.registerNewUser("1007378465", User.CC, "Diego", "reyes", "", "");
+			shiftManager.registerNewUser("1007378465", User.CC, "Diego", "reyes", "", "");
 			fail("DoubleRegistrationException unhandled");
 		} catch (EmptyDataException e) {
 			fail("Wrong Exception");
@@ -73,8 +72,8 @@ class ShiftControlTest {
 		//III. There are not users in the system.
 		try {
 			setup2();
-			control.registerNewUser("1007378465", User.CC, "Benjamin", "Silva S", "", "");
-			assertEquals(control.getUsers().get(0).getId(),"1007378465","User added Incorrectly");
+			shiftManager.registerNewUser("1007378465", User.CC, "Benjamin", "Silva S", "", "");
+			assertEquals(shiftManager.getUsers().get(0).getId(),"1007378465","User added Incorrectly");
 		} catch (EmptyDataException e) {
 			fail("Wrong Exception");
 		} catch (DoubleRegistrationException e) {
@@ -86,8 +85,8 @@ class ShiftControlTest {
 		//Empty id.
 		try {
 			setup1();
-			control.registerNewUser("", User.CC, "Benjamin", "Silva S", "Calle 31c #11-84", "314787608");
-			assertEquals(control.getUsers().get(2).getId(),"1007378465","User added Incorrectly");
+			shiftManager.registerNewUser("", User.CC, "Benjamin", "Silva S", "Calle 31c #11-84", "314787608");
+			assertEquals(shiftManager.getUsers().get(2).getId(),"1007378465","User added Incorrectly");
 			fail("EmptyDataException unhandled");
 		} catch (EmptyDataException e) {
 			assertTrue(true);
@@ -98,8 +97,8 @@ class ShiftControlTest {
 		//Empty typeId.
 		try {
 			setup2();
-			control.registerNewUser("1007378465", "", "Benjamin", "Silva S", "Calle 31c #11-84", "314787608");
-			assertEquals(control.getUsers().get(0).getId(),"1007378465","User added Incorrectly");
+			shiftManager.registerNewUser("1007378465", "", "Benjamin", "Silva S", "Calle 31c #11-84", "314787608");
+			assertEquals(shiftManager.getUsers().get(0).getId(),"1007378465","User added Incorrectly");
 			fail("EmptyDataException unhandled");
 		} catch (EmptyDataException e) {
 				assertTrue(true);
@@ -110,8 +109,8 @@ class ShiftControlTest {
 		//Empty Name
 		try {
 			setup1();
-			control.registerNewUser("1007378465",User.CC, "", "Silva S", "Calle 31c #11-84", "");
-			assertEquals(control.getUsers().get(2).getId(),"1007378465","User added Incorrectly");
+			shiftManager.registerNewUser("1007378465",User.CC, "", "Silva S", "Calle 31c #11-84", "");
+			assertEquals(shiftManager.getUsers().get(2).getId(),"1007378465","User added Incorrectly");
 			fail("EmptyDataException unhandled");
 		} catch (EmptyDataException e) {
 				assertTrue(true);
@@ -123,8 +122,8 @@ class ShiftControlTest {
 		//Empty LastNames
 		try {
 			setup2();
-			control.registerNewUser("Benjamin", User.CC, "Benjamin", "", "", "314787608");
-			assertEquals(control.getUsers().get(0).getId(),"1007378465","User added Incorrectly");
+			shiftManager.registerNewUser("Benjamin", User.CC, "Benjamin", "", "", "314787608");
+			assertEquals(shiftManager.getUsers().get(0).getId(),"1007378465","User added Incorrectly");
 			fail("EmptyDataException unhandled");
 		} catch (EmptyDataException e) {
 				assertTrue(true);
@@ -138,22 +137,22 @@ class ShiftControlTest {
 		
 		//User searched exist. And There are users in the system.
 		setup1();
-		User user = control.searchUser("1007378465");
+		User user = shiftManager.searchUser("1007378465");
 		assertTrue(user!=null);
 		assertEquals(user.getName(),"Benjamin");
-		assertEquals(control.getUsers().indexOf(user),0);
+		assertEquals(shiftManager.getUsers().indexOf(user),0);
 		
 		//User searched does not exist.
 		setup1();
-		user = control.searchUser("9999999");
+		user = shiftManager.searchUser("9999999");
 		assertTrue(user==null);
 		
 		//There are not users in the system.
 		setup2();
-		user = control.searchUser("9999999");
+		user = shiftManager.searchUser("9999999");
 		assertTrue(user==null);
 		
-		user = control.searchUser("1007379465");
+		user = shiftManager.searchUser("1007379465");
 		assertTrue(user==null);
 	}
 	
@@ -163,9 +162,9 @@ class ShiftControlTest {
 		//I.The User have an active shift
 		setup1();
 		try {
-			control.assignShiftToUser("1007378465");
-			assertEquals(control.activeShiftOfUser("1007378465"),control.getShifts().get(1));
-			assertEquals(control.getAvailableShift().getStringShift(),"A02");
+			shiftManager.assignShiftToUser(null, "1007378465");
+			assertEquals(shiftManager.activeShiftOfUser("1007378465"),shiftManager.getShifts().get(1));
+			assertEquals(shiftManager.getAvailableShift().getStringShift(),"A02");
 		} catch(NullPointerException e) {
 			fail("Wrong exception");
 		}
@@ -173,9 +172,9 @@ class ShiftControlTest {
 		//II. The user doesn't have an active shift.
 		setup1();
 		try {
-			assertEquals(control.assignShiftToUser("15872632"),"Shift A02 asigned to user Juan"); //Reyes had the inactive shift A00.
-			assertEquals(control.activeShiftOfUser("15872632").getStringShift(),control.getShifts().get(2).getStringShift());
-			assertEquals(control.getAvailableShift().getStringShift(),"A03");
+			assertEquals(shiftManager.assignShiftToUser(null, "15872632"),"Shift A02 asigned to user Juan"); //Reyes had the inactive shift A00.
+			assertEquals(shiftManager.activeShiftOfUser("15872632").getStringShift(),shiftManager.getShifts().get(2).getStringShift());
+			assertEquals(shiftManager.getAvailableShift().getStringShift(),"A03");
 		} catch(NullPointerException e) {
 			fail("Wrong exception");
 		}
@@ -183,9 +182,9 @@ class ShiftControlTest {
 		//III. The user doesn't have any shift.
 		setup1();
 		try {
-			control.assignShiftToUser("1008253222");
-			assertEquals(control.activeShiftOfUser("1008253222"),control.getShifts().get(2));
-			assertEquals(control.getAvailableShift().getStringShift(),"A03");
+			shiftManager.assignShiftToUser(null,"1008253222");
+			assertEquals(shiftManager.activeShiftOfUser("1008253222"),shiftManager.getShifts().get(2));
+			assertEquals(shiftManager.getAvailableShift().getStringShift(),"A03");
 		} catch(NullPointerException e) {
 			fail("Wrong exception");
 		}
@@ -193,7 +192,7 @@ class ShiftControlTest {
 		//IV. The user doesn't exist
 		setup1();
 		try {
-			control.assignShiftToUser("888888888");
+			shiftManager.assignShiftToUser(null, "888888888");
 			fail("NullPointerException unhandled");
 		} catch(NullPointerException e) {
 			assertTrue(true);
@@ -208,10 +207,10 @@ class ShiftControlTest {
 		//I.There are shifts for attend.
 		setup1();
 		try {
-			control.attendShift(true); //Se atiende el turno de benjamin
-			assertEquals(control.getShifts().get(1).isActive(),false);
-			assertEquals(control.getShifts().get(1).wasAttended(),true);
-			assertEquals(control.getCurrentShift().getStringShift(),"A02");
+			shiftManager.attendShift(true); //Se atiende el turno de benjamin
+			assertEquals(shiftManager.getShifts().get(1).isActive(),false);
+			assertEquals(shiftManager.getShifts().get(1).wasAttended(),true);
+			assertEquals(shiftManager.getCurrentShift().getStringShift(),"A02");
 			
 		} catch(UnreservedShiftException e) {
 			fail();
@@ -220,7 +219,7 @@ class ShiftControlTest {
 		//II. There are nor shifts for attend.
 		setup2();
 		try {
-			control.attendShift(true); //Se intenta atender un turno que no ha sido asignado.
+			shiftManager.attendShift(true); //Se intenta atender un turno que no ha sido asignado.
 			fail();
 		} catch(UnreservedShiftException e) {
 			assertTrue(true);

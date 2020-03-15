@@ -1,184 +1,214 @@
 package iu;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.time.DateTimeException;
 import java.util.Scanner;
-
-import customException.*;
 import model.*;
 public class Main {
 	
 	public static Scanner reader = new Scanner(System.in);
-	public static ShiftControl shiftControl = new ShiftControl();
+	public static ShiftManager shiftManager;
 
 	public static void main(String[] args) {
 		
 		//Variables
 		
 		int option=0;
-		boolean validated=false;
-		
+		long time = 0;
 		int option2=0;
-		String id="";
-		String idType="";
-		String name="";
-		String lastNames="";
-		String address="";
-		String phoneNumber="";
-		boolean attended;
+		float duration;
 		
-		System.out.println("Welcome to ShiftControl");
+		String shiftTypeName="";
+		
+		try {
+			loadShiftManager();
+			System.out.println("Data loaded");
+		} catch (ClassNotFoundException e2) {
+			System.out.println("Welcome for first Time!");
+			shiftManager = new ShiftManager();
+		} catch (IOException e2) {
+			e2.printStackTrace();
+			shiftManager = new ShiftManager();
+		}
+		
+		System.out.println("System Control Shift");
 		
 		do {
 			
 			//Menu
-			
-			System.out.println("\nSelect an Option: \n1.Add User \n2.Register Shift \n3.Attend Shift \n4.Show Shifts Report \n5.Exit");
+			System.out.println("\n"+shiftManager.getDateTime().toString());
+			System.out.print("Available Shift: "+ shiftManager.getAvailableShift().toString());
+			System.out.println("         Current Shift: "+shiftManager.getCurrentShift().toString());
+			System.out.println("\nMenu\nSelect an Option: \n1.Generate users \n2.Generate and register shifts randomly \n3.Attend Shifts until the moment \n4.Assign new type of shift. \n5.Show Shifts Report \n6.Refresh and Save data \n7 Set Date and Time\n8.Exit");
 			option=reader.nextInt();
 			reader.nextLine();
 			
 			switch(option) {
 			
-			case 1://Añadir un Usuario
-				System.out.println("Add User.                             (Fields with * are required)\n\n");
-				
-				do {
-					
-					
-					//Leer Tipo de Documento
-					System.out.println("*Select the Id Type: \n1.Cédula de Ciudadania \n2.Tarjeta de Identidad \n3.Registro Civil \n4.Pasaporte \n5.Cédula de Extranjería");
-					option2=reader.nextInt();
-					reader.nextLine();
-					
-					switch(option2) {
-					
-					case 1:
-						idType=User.CC;
-						validated=true;
-					break;
-					case 2:
-						idType=User.TI;
-						validated=true;
-					break;
-					case 3:
-						idType=User.REGISTRO_CIVIL;
-						validated=true;
-					break;
-					case 4:
-						idType=User.PASAPORTE;
-						validated=true;
-					break;
-					case 5:
-						idType= User.CE;
-						validated=true;
-					break;
-					default:
-						System.out.println("Invalided Option");
-					break;
-					}
-				}while(!validated);
-				
-				
-				//Leer Número de Documento
-				System.out.println("*Type the id: ");
-				id= reader.nextLine();
-				
-				//Leer Nombre
-				System.out.println("*Type the name: ");
-				name= reader.nextLine();
-				
-				//Leer Apellidos
-				System.out.println("*Type the last names: ");
-				lastNames=reader.nextLine();
-				
-				//Leer Direccion
-				System.out.println("Type the address: ");
-				address= reader.nextLine();
-				
-				//Leer Número de Teléfono
-				System.out.println("Type the phone number: ");
-				phoneNumber= reader.nextLine();
+			case 1://Generate users
+				System.out.println("Type the quanty of users to generate: ");
+				int u = reader.nextInt();
+				reader.nextLine();
 				
 				try {
-					
-					shiftControl.registerNewUser(id, idType, name, lastNames, address, phoneNumber);
-					System.out.println("User added correctly");
-					
-				}catch(EmptyDataException e) {
-					
-					System.out.println("User was not added.\n"+e.getMessage()+"\nYou must type the information of all requeride fields (*). (Id Type, Id, Name and Last Names.)");
-					
-				}catch(DoubleRegistrationException f) {
-					
-					System.out.println("User was not added. "+f.getMessage());
+					time=System.currentTimeMillis();
+					shiftManager.generateUsers(u);
+					time=System.currentTimeMillis()-time;
+					System.out.println(u+" users generated. (Time: "+time+"ms.)");
+				} catch (IOException e1) {
+					System.out.println("File 'Data/names.txt' or 'Data/lastNames.txt' was not Found. It could been removed o change of location");
 				}
-				
-			break;
+				break;
 			
 			case 2:
-				System.out.println("Register Shift\n\n");
-				System.out.println("Type the id user: ");
-				id= reader.nextLine();
+				System.out.println("Type the number of days to generate shifts: ");
+				int days = reader.nextInt();
+				reader.nextLine();
+				
+				System.out.println("Type the number of shifts to generate per day: ");
+				int shiftsPerDay = reader.nextInt();
+				reader.nextLine();
 				
 				try {
-					
-					System.out.println(shiftControl.searchUser(id).toString());
-					
-					System.out.println("\n1.assign shift. \n2.Cancel");
-					option2=reader.nextInt();
-					reader.nextLine();
-					
-					if(option2==1) 
-						System.out.println(shiftControl.assignShiftToUser(id));
-
+					time = System.currentTimeMillis();
+					shiftManager.generateShifts(days, shiftsPerDay);
+					time = System.currentTimeMillis() - time;
+					System.out.println(days*shiftsPerDay+" shifts was registered randomly. (Time: "+time+"ms.)");
 				}catch(NullPointerException e) {
-					System.out.println("User Not Found with id: "+id);
+					System.out.println(e.getMessage());
+				}catch(IndexOutOfBoundsException e) {
+					time = System.currentTimeMillis() - time;
+					System.out.println(e.getMessage()+" (Time: "+time+"ms.)");
 				}
-				
-			break;
+				break;
 			
 			case 3:
-				option2=1;
-				while(option2==1) {
-					
-					System.out.println("Current Shift: "+ shiftControl.getCurrentShift().getStringShift());
-
-					if(option2==1){
-						
-						System.out.println("\nwas the user attended? \n1.Yes \n2.No");
-						option2=reader.nextInt();
-						reader.nextLine();
-						
-						if(option2==1)
-							attended=true;
-						else
-							attended=false;
-						
-						try {
-							shiftControl.attendShift(attended);
-							System.out.println("Shift Registered");
-						}catch(UnreservedShiftException e) {
-							System.out.println(e.getMessage()+" Please, wait until some user reserve the shift.");
-						}
-					}
-					
-					System.out.println("Current Shift: "+ shiftControl.getCurrentShift().getStringShift());
-					System.out.println("\n1.Attend Shift \n2.Back");
-					option2=reader.nextInt();
-				}
-			break;
-			
+				time = System.currentTimeMillis();
+				String shiftsAttended = shiftManager.attendShifts();
+				time = System.currentTimeMillis() - time;
+				if(shiftsAttended.equals(""))
+					System.out.print("No shifts was attended");
+				else
+					System.out.print(shiftsAttended);
+				System.out.println(" (time: "+time+"ms)");
+				break;
 			case 4:
-				System.out.println("Good Bye ;)");
-			break;
-			
+				System.out.println("Type the name of the shift type:");
+				shiftTypeName=reader.nextLine();
+				System.out.println("Type the duration of this shift type in minuts:                 Ex:(2,5)");
+				duration = reader.nextFloat();
+				time = System.currentTimeMillis();
+				String msg = shiftManager.addTypeShift(shiftTypeName, duration);
+				time = System.currentTimeMillis() - time;
+				System.out.println(msg + " (Time:"+time+"ms.)");
+				break;
 			
 			case 5:
-				System.out.println(shiftControl.generateReport());
-			break;
+				time=System.currentTimeMillis();
+				msg = shiftManager.generateReport();
+				time=System.currentTimeMillis() - time;
+				System.out.println(msg+" (Time: "+time+"ms)");
+				break;
+			
+			case 6:
+				shiftManager.refresh();
+				try {
+					saveShiftManager();
+				} catch (IOException e1) {
+				}
+				break;
+			
+			case 7:
+				System.out.println("\n1.Manual\n2.Automathic");
+				option2=reader.nextInt();
+				reader.nextLine();
+				
+				switch(option2) {
+				case 1:
+					System.out.println("Type the year:      (2020)");
+					int year = reader.nextInt();
+					reader.nextLine();
+					
+					System.out.println("Type the month (1-12):");
+					int month = reader.nextInt();
+					reader.nextLine();
+					
+					System.out.println("Type the day of month (1-31):");
+					int day = reader.nextInt();
+					reader.nextLine();
+					
+					System.out.println("Type hour (0-23):");
+					int hour = reader.nextInt();
+					reader.nextLine();
+					
+					System.out.println("Type the min (0-59):");
+					int min = reader.nextInt();
+					reader.nextLine();
+					
+					System.out.println("Type the second (0-59):");
+					int second = reader.nextInt();
+					reader.nextLine();
+					
+					try {
+						time = System.currentTimeMillis();
+						shiftManager.getDateTime().setDateTimeManual(year, month, day, hour, min, second);
+						time = System.currentTimeMillis() - time;
+						System.out.print("Date Time updated");
+					}catch(DateTimeException e) {
+						System.out.println("The value of some field is out of range, or the day of month is invalid for the month/year");
+					}
+					break;
+					
+					
+					
+				case 2:
+					time = System.currentTimeMillis();
+					shiftManager.getDateTime().setDateTimeAutomathic();
+					time = System.currentTimeMillis() - time;
+					System.out.print("Date and Time was updated using the current date and time of the computer system.\n");
+					break;
+				}
+				System.out.println(" Time: "+time+"ms.");
+				shiftManager.refresh();
+				break;
+				
+				
+			case 8:
+				try {
+					saveShiftManager();
+				} catch (IOException e) {
+				}
+				System.out.println("Good Bye ;)");
+				break;
+				
+				
 			default:
 				System.out.println("Invalided Option");
-			break;
+				break;
 			}
 			
-		}while(option!=5);
+		}while(option!=8);
+	}
+	
+	public static void saveShiftManager() throws IOException{
+		
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("data/ShiftManager.srl"));
+		
+		oos.writeObject(shiftManager);
+		
+		oos.close();
+	}
+	
+	public static void loadShiftManager() throws IOException, ClassNotFoundException{
+		
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data/ShiftManager.srl"));
+		
+		shiftManager=(ShiftManager)ois.readObject();
+		
+		ois.close();
 	}
 }

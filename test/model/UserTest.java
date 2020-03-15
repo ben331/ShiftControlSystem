@@ -1,4 +1,4 @@
-package test;
+package model;
 
 import model.User;
 
@@ -35,7 +35,7 @@ class UserTest {
 		assertEquals(user.getIdType(),User.CC);
 		assertEquals(user.getId(),"1007378465");
 		assertEquals(user.getName(),"Benjamin");
-		assertEquals(user.getLastNames(),"Silva Salgado");
+		assertEquals(user.getLastName(),"Silva Salgado");
 		assertEquals(user.getAddress(),"Calle 31C #11-84");
 		assertEquals(user.getPhoneNumber(),"3174787608");
 		
@@ -44,7 +44,7 @@ class UserTest {
 		assertEquals(user.getIdType(),User.TI);
 		assertEquals(user.getId(),"14893632");
 		assertEquals(user.getName(),"Felipe");
-		assertEquals(user.getLastNames(),"Morales Hernandez");
+		assertEquals(user.getLastName(),"Morales Hernandez");
 		assertEquals(user.getAddress(),"");
 		assertEquals(user.getPhoneNumber(),"");
 		

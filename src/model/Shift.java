@@ -1,10 +1,13 @@
 package model;
 
+import java.io.Serializable;
+
 /**
  * @author bengi
  *
  */
-public class Shift {
+@SuppressWarnings("serial")
+public class Shift implements Serializable {
 	
 	//-----------------------------------------
 	//Associations
@@ -37,6 +40,15 @@ public class Shift {
 	 */
 	private boolean active;
 	
+	/**
+	 * An ShiftType that contents the name of the type shift and the duration of these shifts.
+	 */
+	private ShiftType shiftType;
+	
+	/**
+	 * A time when the shift will be attended in milliseconds,
+	 */
+	private long timeForAttend;
 	
 	//-----------------------------------------
 	//Constructors
@@ -58,12 +70,15 @@ public class Shift {
 	 * @param number Number part of the code that identify the shift. Number is between 0 and 99.
 	 * @param assignedIdUser User that have reserved this shift. User must exist in the users list.
 	 * @param active  A boolean value that indicate if the shift is on hold.
+	 * @param shiftType An object that represents the type of shift and its respective duration. shiftType!=null.
 	 */
-	public Shift(char literal, int number, User assignedIdUser, boolean active) {
+	public Shift(char literal, int number, User assignedIdUser, boolean active, ShiftType shiftType, long timeForAttend) {
 		this.literal = literal;
 		this.number = number;
 		this.assignedUser = assignedIdUser;
 		this.active=active;
+		this.shiftType=shiftType;
+		this.timeForAttend = timeForAttend;
 	}
 	
 	//---------------------------------------------------------
@@ -89,6 +104,14 @@ public class Shift {
 		return attended;
 	}
 	
+	public ShiftType getShiftType() {
+		return shiftType;
+	}
+	
+	public long getTimeForAttend() {
+		return timeForAttend;
+	}
+	
 	public void setAttended(boolean attended) {
 		this.attended = attended;
 	}
@@ -105,7 +128,8 @@ public class Shift {
 	 * <b>Des:</b> This method join the literal part and the number part of the code.<br> 
 	 * @return The union of the parts of the shift code. 
 	 */
-	public String getStringShift() {
+	@Override
+	public String toString() {
 		return number<10 ? ""+literal+"0"+number : ""+literal+number;
 	}
 	
